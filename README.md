@@ -2,7 +2,7 @@
 
 Project page for **Refuse without Refusal: A Structural Analysis of Safety-Tuning Responses for Reducing False Refusals in Language Models** (EMNLP 2026).
 
-- Page: https://mz-kim.github.io/rwr-emnlp2026/
+- Page: https://rwr-emnlp2026.github.io/
 - Paper: https://arxiv.org/abs/2609.04714
 - Code: https://github.com/mz-kim/Refuse-without-Refusal
 
