@@ -95,8 +95,7 @@
         </a>
       </div>
       <p class="tldr">
-        Safety datasets often exhibit templated responses in which a boilerplate refusal statement precedes a rationale explaining the refusal.
-        <b>Training solely on rationales reduces false refusals</b> on benign queries that contain superficially risky language, while maintaining a comparable level of safety performance.
+        <b>Training solely on rationales</b>, without the boilerplate refusal statement, reduces false refusals while maintaining a comparable level of safety performance.
       </p>
       <p class="note"><b>Warning:</b> This page contains examples of harmful prompts.</p>
     </div>
@@ -106,12 +105,9 @@
   <section class="block" id="overview">
     <div class="wrap">
       <p class="kicker">01 · Motivation</p>
-      <h2>False refusals on superficially similar queries</h2>
+      <h2>False refusals</h2>
       <p class="lead">
-        Models often struggle to distinguish genuinely harmful queries from benign queries that contain superficially
-        risky language, resulting in false refusals. In these paired outputs from Llama-3.1-8B, training with a Statement
-        and Rationale leads to refusals on harmful and pseudo-harmful prompts, whereas Rationale-Only training refuses
-        harmful input but complies with benign ones.
+        Models often struggle to distinguish genuinely harmful queries from benign queries that contain superficially risky language.
       </p>
 
       <div class="pairs">
@@ -147,7 +143,7 @@
           </div>
         </article>
       </div>
-      <p class="caption">Figure 1 of the paper. Outputs are truncated (…) as in the paper.</p>
+      <p class="caption">Figure 1 of the paper (Llama-3.1-8B).</p>
     </div>
   </section>
 
@@ -180,9 +176,7 @@
       <p class="kicker">02 · Method</p>
       <h2>Safety response decomposition</h2>
       <p class="lead">
-        We categorize the elements of a safety-tuning response into two primary components: a boilerplate refusal
-        statement and a rationale explaining the refusal. Responses are first normalized to a base format, and variants
-        are constructed by holding the request and rationale content fixed while varying the target-response structure.
+        We decompose a safety-tuning response into a boilerplate refusal statement and a rationale explaining the refusal.
       </p>
 
       <div class="anatomy">
@@ -191,14 +185,13 @@
           <span class="part rat"><span class="part-tag">Refusal rationale</span>Counterfeiting money is illegal and …</span>
         </div>
         <div class="grid-2 anat-legend">
-          <p><b>Refusal statement.</b> A short, often formulaic expression of non-compliance used for potentially harmful requests, e.g., “Sorry, but I can’t help with that request” and “I’m unable to assist with that request”.</p>
-          <p><b>Refusal rationale.</b> Explains why the request is refused by identifying request-specific concerns such as illegality, physical harm, or ethical risk.</p>
+          <p><b>Refusal statement.</b> A short, often formulaic expression of non-compliance.</p>
+          <p><b>Refusal rationale.</b> Explains why the request is refused.</p>
         </div>
       </div>
 
       <div class="sub-block">
         <h3>Experimental conditions</h3>
-        <p>Select a condition to see the corresponding target response and the results of the model trained on it.</p>
         <div class="builder panel">
           <div class="builder-controls">
             <div>
@@ -234,17 +227,14 @@
             <div class="variant-score" id="variant-score"></div>
           </div>
         </div>
-        <p class="caption">
-          Illustration built from Figure 2 and Table 1 of the paper; “…” marks text truncated in the paper. Beginning
-          corresponds to the base-format response, which is identical to Statement and Rationale. Recall and F1 are from Table 2.
-        </p>
+        <p class="caption">Illustration from Figure 2 and Table 1. Recall and F1 from Table 2.</p>
       </div>
 
       <div class="facts">
-        <div class="fact"><p class="label">Models</p><p>Llama-3.1-8B, Mistral-7B-v0.3, Gemma-2-9B and Qwen2.5-7B, in their base versions rather than instruction-tuned variants</p></div>
-        <div class="fact"><p class="label">Training data</p><p>1,024 instruction-response pairs from the clean version of Alpaca + 256 Safety-Tuned LLaMAs instances; all dataset processing with Llama-3.3-70B-Instruct</p></div>
-        <div class="fact"><p class="label">Training</p><p>QLoRA under identical optimization settings across conditions; greedy decoding via vLLM</p></div>
-        <div class="fact"><p class="label">Evaluation</p><p>Safety: AdvBench, MaliciousInstruct. False refusal: XSTest-Safe, OKTest. Llama-3.3-70B-Instruct as judge (human evaluation agreement for false refusal: Cohen’s κ = 0.81)</p></div>
+        <div class="fact"><p class="label">Models</p><p>Llama-3.1-8B, Mistral-7B-v0.3, Gemma-2-9B, Qwen2.5-7B (base versions)</p></div>
+        <div class="fact"><p class="label">Training data</p><p>1,024 Alpaca + 256 Safety-Tuned LLaMAs</p></div>
+        <div class="fact"><p class="label">Training</p><p>QLoRA, identical settings across conditions</p></div>
+        <div class="fact"><p class="label">Evaluation</p><p>Safety: AdvBench, MaliciousInstruct<br>False refusal: XSTest-Safe, OKTest</p></div>
       </div>
     </div>
   </section>
@@ -253,16 +243,14 @@
   <section class="block" id="results">
     <div class="wrap">
       <p class="kicker">03 · Results</p>
-      <h2>Refusal statements impede the distinction between harmful and pseudo-harmful queries</h2>
-      <p class="lead">
-        We evaluate harmful-query compliance and false refusal on pseudo-harmful queries. In addition to compliance rates (CR), we report precision, recall, and F1 by treating compliance as the positive class.
-      </p>
+      <h2>Rationale-Only models exhibit reduced false refusals</h2>
+      <p class="lead">Lower compliance is better on harmful sets; higher is better on pseudo-harmful sets.</p>
 
-      <div class="stats">
-        <div class="stat"><div class="num"><span class="from">0.39</span><span class="arrow">→</span><span class="to">0.71</span></div><p>XSTest-Safe CR of Llama-3.1-8B, Statement and Rationale → Rationale-Only</p></div>
-        <div class="stat"><div class="num"><span class="from">0.49</span><span class="arrow">→</span><span class="to">0.75</span></div><p>XSTest-Safe CR of Mistral-7B-v0.3, Statement and Rationale → Rationale-Only</p></div>
-        <div class="stat"><div class="num">0.02 / 0.06</div><p>AdvBench / MaliciousInstruct CR of Rationale-Only on Llama-3.1-8B (Statement and Rationale: 0.02 / 0.02)</p></div>
-        <div class="stat"><div class="num"><span class="to">0.84</span> / <span class="to">0.88</span></div><p>F1 of Request-Specific on Llama-3.1-8B / Mistral-7B-v0.3, the highest F1 for each model in Table 2</p></div>
+      <p class="label stats-label">Statement and Rationale → Rationale-Only</p>
+      <div class="stats tight">
+        <div class="stat"><div class="num"><span class="from">0.39</span><span class="arrow">→</span><span class="to">0.71</span></div><p>XSTest-Safe CR · Llama-3.1-8B</p></div>
+        <div class="stat"><div class="num"><span class="from">0.49</span><span class="arrow">→</span><span class="to">0.75</span></div><p>XSTest-Safe CR · Mistral-7B-v0.3</p></div>
+        <div class="stat"><div class="num"><span class="from">0.02</span><span class="arrow">→</span>0.06</div><p>MaliciousInstruct CR · Llama-3.1-8B</p></div>
       </div>
 
       <div class="controls">
@@ -272,16 +260,16 @@
         </div>
       </div>
       <div class="bars" id="t2-bars" role="figure" aria-label="Pseudo-harmful compliance by training condition"></div>
-      <p class="caption">Bars: recall, i.e., compliant responses to pseudo-harmful queries (XSTest-Safe and OKTest). Right: F1, and AdvBench / MaliciousInstruct CR (lower is better). Highlighted: conditions without a refusal statement. Results for Gemma-2-9B and Qwen2.5-7B are provided in Appendix D.</p>
+      <p class="caption">Bars: recall on pseudo-harmful queries. Right: F1 · AdvBench / MaliciousInstruct CR. Other models: Appendix D.</p>
 
       <div class="grid-2 findings">
         <div>
-          <h3>Position and components of the refusal statement</h3>
-          <p>Placing the refusal statement at the beginning yields more false refusals than placing it in the middle or at the end. The inclusion of a refusal statement elevates false refusal rates, regardless of whether it is presented alone or alongside a rationale. Conversely, Rationale-Only models exhibit reduced false refusals while maintaining comparable safety performance.</p>
+          <h3>Refusal statements elevate false refusal rates</h3>
+          <p>Regardless of whether it is presented alone or alongside a rationale. At the beginning, it yields more false refusals than in the middle or at the end.</p>
         </div>
         <div>
-          <h3>Explicitly stating prompt details in rationales influences distinction capability</h3>
-          <p>Request-Specific rationales provide an additional benefit in reducing false refusals compared to Generic alternatives. This pattern suggests that naming the requested action and its risk provides a more informative supervision signal than a generic explanation.</p>
+          <h3>Request-Specific rationales provide an additional benefit</h3>
+          <p>Naming the requested action and its risk provides a more informative supervision signal.</p>
         </div>
       </div>
 
@@ -292,7 +280,7 @@
 
       <div class="sub-block">
         <h3>Core capabilities and safety robustness</h3>
-        <p>No response condition shows a consistent advantage or degradation in core capabilities, and Rationale-Only remains comparable to Statement and Rationale on jailbreak-style benchmarks.</p>
+        <p>No consistent degradation in core capabilities; safety remains comparable on jailbreak-style benchmarks.</p>
         <div class="tbl-wrap">
           <table class="tbl">
             <thead>
@@ -310,7 +298,7 @@
             </tbody>
           </table>
         </div>
-        <p class="tbl-note">Core capabilities: MMLU, OpenBookQA, HellaSwag, ARC, PIQA (0-shot EM) and GSM8K (8-shot CoT). Jailbreak: harmful-compliance rate on HarmBench, JailbreakBench, WildJailbreak and SORRY-Bench.</p>
+        <p class="tbl-note">Averages over 6 core-capability and 4 jailbreak-style benchmarks.</p>
         <details class="more">
           <summary>Per-benchmark scores (Tables 3 and 4)</summary>
           <div>
@@ -354,34 +342,31 @@
   <section class="block" id="analysis">
     <div class="wrap">
       <p class="kicker">04 · Analysis</p>
-      <h2>Internal and structural effects of refusal statements</h2>
-      <p class="lead">
-        We evaluate internal effects via decoding entropy and token-level attribution, then test neutral prefixes, varied
-        phrasing, and keyword-specific placements of refusal statements. Results are reported for Llama-3.1-8B.
-      </p>
+      <h2>Internal and structural effects</h2>
+      <p class="lead">Analyses use Llama-3.1-8B.</p>
 
       <div class="sub-block">
-        <h3>Boilerplate statements and their association with deterministic behavior and superficial cues</h3>
-        <p>Statement and Rationale yields lower first-token entropy than Rationale-Only on harmful and pseudo-harmful prompts, indicating a more concentrated initial-token distribution. Removing isolated risky tokens produces larger entropy shifts under Statement and Rationale, whereas Rationale-Only sensitivity is distributed over more semantically informative spans.</p>
+        <h3>Deterministic behavior and superficial cues</h3>
+        <p>Statement and Rationale yields lower first-token entropy, and removing isolated risky tokens produces larger entropy shifts. Rationale-Only sensitivity is distributed over more semantically informative spans.</p>
         <div class="grid-3 fig-row">
           <figure>
             <div class="frame"><img src="static/img/entropy_first_token.png" width="1100" height="641" alt="Bar chart of first-token entropy. Statement and Rationale is far lower than Rationale-Only on AdvBench, XSTest-Safe and its subset, and somewhat lower on AlpacaEval." loading="lazy"></div>
-            <figcaption><b>(a)</b> First-token entropy on AdvBench (harmful), AlpacaEval (benign) and XSTest-Safe (pseudo-harmful).</figcaption>
+            <figcaption><b>(a)</b> First-token entropy.</figcaption>
           </figure>
           <figure>
             <div class="frame"><img src="static/img/attribution_statement_rationale.png" width="900" height="625" alt="Token attribution for 'What is the perfect strategy for stealing a base in a baseball game?'. Only the token 'stealing' has high attribution." loading="lazy"></div>
-            <figcaption><b>(b)</b> FT w/ Statement and Rationale: per-token attribution (Δ entropy) for “What is the perfect strategy for stealing a base in a baseball game?”</figcaption>
+            <figcaption><b>(b)</b> Token attribution, Statement and Rationale, for “What is the perfect strategy for stealing a base in a baseball game?”</figcaption>
           </figure>
           <figure>
             <div class="frame"><img src="static/img/attribution_rationale_only.png" width="900" height="625" alt="Token attribution for the same prompt. Attribution is spread across many tokens, highest on 'strategy' and 'What'." loading="lazy"></div>
-            <figcaption><b>(c)</b> FT w/ Rationale-Only, same prompt.</figcaption>
+            <figcaption><b>(c)</b> Token attribution, Rationale-Only.</figcaption>
           </figure>
         </div>
       </div>
 
       <div class="sub-block">
         <h3>Manual inspection of attribution types</h3>
-        <p>Manual inspection indicates that while Rationale-Only training produces meaningful attributions in over 97% of cases, Statement and Rationale training frequently relies on less content-related cues in approximately 90% of instances.</p>
+        <p>Rationale-Only training produces meaningful attributions in over 97% of cases.</p>
         <div class="stack" id="attr-stack" role="figure" aria-label="Share of attribution types by training format"></div>
         <p class="caption">Table 5 of the paper; XSTest-Safe n = 79, OKTest n = 74.</p>
       </div>
@@ -389,13 +374,13 @@
       <div class="grid-2 sub-block">
         <div>
           <h3>Structural and stylistic variations</h3>
-          <p>Models trained with a neutral prefix (“Thank you for asking!”) continue to exhibit higher false refusal rates than Rationale-Only, despite the prefix containing no explicit safety-related language. Replacing the statement with 15 manually authored stylistic variants leads to observable improvements relative to the fixed statement condition, but performance remains consistently below that of Rationale-Only models.</p>
+          <p>A neutral prefix (“Thank you for asking!”) still yields higher false refusal rates; 15 stylistic variants remain below Rationale-Only.</p>
           <div class="bars compact" id="t6-bars" role="figure" aria-label="Pseudo-harmful compliance under template variations"></div>
           <p class="caption">Recall and F1 (Table 6).</p>
         </div>
         <div>
           <h3>Keyword-conditioned experiment</h3>
-          <p>In each variant, the refusal statement is added only to the approximately 51 training responses containing a designated keyword. Each model variant exhibits a reduced compliance rate specifically for its designated keyword.</p>
+          <p>Adding the statement only for one keyword reduces compliance specifically for that keyword.</p>
           <div class="tbl-wrap">
             <table class="tbl heat">
               <thead><tr><th>Condition</th><th>Drug</th><th>Kill</th><th>Money</th><th>Steal</th><th>Shoot</th></tr></thead>
@@ -409,7 +394,7 @@
               </tbody>
             </table>
           </div>
-          <p class="caption">Compliance rate on 50 pseudo-harmful queries per keyword (Table 7). Highlighted: each variant’s designated keyword.</p>
+          <p class="caption">Compliance on 50 pseudo-harmful queries per keyword (Table 7).</p>
         </div>
       </div>
     </div>
@@ -420,9 +405,6 @@
     <div class="wrap">
       <p class="kicker">05 · Applicability</p>
       <h2>Findings hold under ICL settings and with mitigation methods</h2>
-      <p class="lead">
-        We test whether Rationale-Only benefits persist in in-context learning (ICL) without fine-tuning, using URIAL, and when combined with inference-time mitigation methods (SelfCD, SCANS) after fine-tuning. The mitigation experiments use Llama-3.1-8B only.
-      </p>
       <div class="tbl-wrap">
         <table class="tbl">
           <thead>
@@ -438,7 +420,7 @@
           </tbody>
         </table>
       </div>
-      <p class="tbl-note">F1 with compliance as the positive class (Tables 8 and 9). The ICL setting covers the three component conditions. * denotes our own implementation. Full compliance rates are in the paper.</p>
+      <p class="tbl-note">F1 (Tables 8 and 9). * denotes our own implementation.</p>
     </div>
   </section>
 

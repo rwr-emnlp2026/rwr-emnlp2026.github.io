@@ -77,19 +77,19 @@
   var R2 = "It’s important to …";
   var V = {
     base: { name: "Statement and Rationale · Beginning", parts: [S, R1, R2], row: "Statement and Rationale",
-      desc: "Base format: a single concise refusal at the beginning, followed by a contiguous rationale of at least two sentences." },
+      desc: "Base format: a concise refusal at the beginning, followed by the rationale." },
     stmt: { name: "Statement-Only", parts: [S], row: "Statement-Only",
-      desc: "Retains a refusal phrase with all explanatory content removed." },
+      desc: "Refusal phrase only; explanatory content removed." },
     rat: { name: "Rationale-Only", parts: [R1, R2], row: "Rationale-Only",
-      desc: "Isolates the explanation while eliminating refusal markers." },
+      desc: "Explanation only; refusal markers removed." },
     mid: { name: "Middle", parts: [R1, S, R2], row: "Middle",
-      desc: "Places the refusal within the rationale (i.e., a non-initial, non-final sentence)." },
+      desc: "Refusal placed within the rationale." },
     end: { name: "End", parts: [R1, R2, S], row: "End",
-      desc: "Places the refusal as the final sentence." },
+      desc: "Refusal placed as the final sentence." },
     gen: { name: "Generic", parts: [R1_GEN, R2], row: "Generic",
-      desc: "Replaces direct mentions of the requested action with generalized wording, so the explanation no longer names the prompt-specific behavior." },
+      desc: "Requested action replaced with generalized wording." },
     spec: { name: "Request-Specific", parts: [R1_SPEC, R2], row: "Request-Specific",
-      desc: "Explicitly states the requested action and identifies which aspects of the prompt are considered harmful or unsafe." }
+      desc: "Explicitly states the requested action and what is harmful." }
   };
   var builderButtons = Array.prototype.slice.call(document.querySelectorAll("[data-builder] button"));
   function showVariant(key) {
