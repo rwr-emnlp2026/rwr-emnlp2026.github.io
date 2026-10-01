@@ -32,7 +32,7 @@
 
   // ---- Table 2 bars, toggled by model ----
   var barsEl = document.getElementById("t2-bars");
-  var html = '<div class="bars-head"><span>Training format</span><span>Pseudo-harmful compliance</span><span>Recall</span><span>F1 · harmful CR</span></div>';
+  var html = '<div class="bars-head"><span>Condition</span><span>Pseudo-harmful queries (XSTest-Safe, OKTest)</span><span>Recall</span><span>F1 · harmful CR</span></div>';
   var group = null;
   T2.llama.forEach(function (r, i) {
     if (r[0] !== group) { group = r[0]; html += '<p class="group-label">' + group + "</p>"; }
@@ -77,19 +77,19 @@
   var R2 = "It’s important to …";
   var V = {
     base: { name: "Statement and Rationale · Beginning", parts: [S, R1, R2], row: "Statement and Rationale",
-      desc: "The base format: one concise refusal statement first, then a rationale of at least two sentences." },
+      desc: "Base format: a single concise refusal at the beginning, followed by a contiguous rationale of at least two sentences." },
     stmt: { name: "Statement-Only", parts: [S], row: "Statement-Only",
-      desc: "The refusal phrase alone, with all explanatory content removed." },
+      desc: "Retains a refusal phrase with all explanatory content removed." },
     rat: { name: "Rationale-Only", parts: [R1, R2], row: "Rationale-Only",
-      desc: "The explanation alone, with refusal markers removed." },
+      desc: "Isolates the explanation while eliminating refusal markers." },
     mid: { name: "Middle", parts: [R1, S, R2], row: "Middle",
-      desc: "The refusal statement moved inside the rationale, as a sentence that is neither first nor last." },
+      desc: "Places the refusal within the rationale (i.e., a non-initial, non-final sentence)." },
     end: { name: "End", parts: [R1, R2, S], row: "End",
-      desc: "The refusal statement moved to the final sentence." },
+      desc: "Places the refusal as the final sentence." },
     gen: { name: "Generic", parts: [R1_GEN, R2], row: "Generic",
-      desc: "Direct mentions of the requested action are replaced with general wording." },
+      desc: "Replaces direct mentions of the requested action with generalized wording, so the explanation no longer names the prompt-specific behavior." },
     spec: { name: "Request-Specific", parts: [R1_SPEC, R2], row: "Request-Specific",
-      desc: "The rationale names the requested action and what makes it harmful." }
+      desc: "Explicitly states the requested action and identifies which aspects of the prompt are considered harmful or unsafe." }
   };
   var builderButtons = Array.prototype.slice.call(document.querySelectorAll("[data-builder] button"));
   function showVariant(key) {
@@ -135,8 +135,8 @@
   var T6 = [
     ["Rationale-Only", 0.65, 0.77, true],
     ["Statement and Rationale", 0.40, 0.56],
-    ["“Thank you for asking!” + rationale", 0.45, 0.61],
-    ["15 varied statements + rationale", 0.55, 0.69]
+    ["Prefix and Rationale", 0.45, 0.61],
+    ["Varied Statement and Rationale", 0.55, 0.69]
   ];
   document.getElementById("t6-bars").innerHTML = T6.map(function (r) {
     return '<div class="bar-row' + (r[3] ? " hl" : "") + '"><span class="name">' + r[0] + "</span>" +
